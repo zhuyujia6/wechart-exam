@@ -29,6 +29,9 @@ public class WeiXinBasicKey {
     /**图片上传的文件夹*/
     public final static String UPLOADPIC="uploadPic";
 
+    //添加菜单接口
+    public static final String ADD_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+
     //https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE
     public static final String UPLOAD_URL ="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
     /**使用这个接口之前进行网页授权跳转链接微信服务器会给我们一个code，通过code去使用这个接口获取进一步的信息，*/
@@ -37,4 +40,16 @@ public class WeiXinBasicKey {
     public static final String GETALLOPENID = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
 
 
+    /**
+     * 关注二维码连接
+     */
+    public static final String GuanZhuMa="http://weixin.qq.com/r/GS2ehszEjZHyrYjl93gL";
+    /**
+     * 二维码存放地址
+     */
+    public static final String SaveQRCodePath="D:/IDEAA/wechartexam/src/main//resources/static/asserts/images/qrcode/";
+    /**
+     * 二维码logo地址
+     */
+    public static final String QRCodeLOGOPath="D:/IDEAA/wechartexam/src/main/resources/static/hg.png";
 }

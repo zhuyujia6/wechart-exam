@@ -2,9 +2,14 @@ spring:
   datasource:
     username: root
     password: a
-    url: jdbc:mysql://127.0.0.1:3306/test2
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/db_weixin
+    driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+      exclude: WEB-INF/**
 
     #   数据源其他配置
     initialSize: 5
@@ -23,9 +28,19 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
   redis:
     host: 127.0.0.1
     port: 6379
     password: a
+
 server:
   port: 80
+
+#开启驼峰命名转换
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+

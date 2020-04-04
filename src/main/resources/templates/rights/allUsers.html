@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+    <!-- Title Page-->
+    <title>用户列表</title>
+
+    <!-- Fontfaces CSS-->
+    <link th:href="@{/asserts/css/font-face.css}" href="css/font-face.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/font-awesome-4.7/css/font-awesome.min.css}" href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/font-awesome-5/css/fontawesome-all.min.css}" href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/mdi-font/css/material-design-iconic-font.min.css}" href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link th:href="@{/asserts/vendor/bootstrap-4.1/bootstrap.min.css}" href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link th:href="@{/asserts/vendor/animsition/animsition.min.css}" href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css}" href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/wow/animate.css}" href="vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/css-hamburgers/hamburgers.min.css}" href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/slick/slick.css}" href="vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/select2/select2.min.css}" href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/perfect-scrollbar/perfect-scrollbar.css}" href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link th:href="@{/asserts/css/theme.css}" href="css/theme.css" rel="stylesheet" media="all">
+
+
+</head>
+
+<body class="animsition">
+    <div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+      <!--  <div th:replace="commons/bar::header"></div>-->
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <div th:replace="commons/bar::#sidebar(activeUri='allUsers',active='rights')"></div>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <div th:replace="commons/bar::desktop"></div>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content"  >
+                <div class="panel panel-default">
+                    <div class="panel-body form-group" style="margin-bottom:0px;">
+                        <div style="float: left"><label style="text-align: right; margin-top:25px">用户类型：</label></div>
+                        <div style="float: left;margin-top: 20px" class="rs-select2--dark rs-select2--md m-r-10 rs-select2--border">
+                            <select onchange="selectOnchang(this)"  id="select_type"  class="js-select2" >
+                                <option  value="3">微信用户</option>
+                                <option value="1">管理员</option>
+                            </select>
+                            <div class="dropDownSelect2"></div>
+                        </div>
+                        <div style="float: left"><label style="text-align: right; margin-top:25px">用户名：</label></div>
+                        <div style="float: left;margin-top: 20px;"class="col-sm-2">
+                            <input type="text" class="form-control" name="form_userName" id="form_userName"/>
+                        </div>
+                        <div style="float: left;margin-top: 20px" class="col-sm-2 col-sm-offset-4">
+                            <button class="btn btn-primary" onclick="findUserByName()"  id="search_btn">查询</button> &nbsp;
+                            <button class="btn btn-primary" onclick="resetUserList()"  id="reset_btn">重置</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="user_data" class="user-data m-b-30">
+                    <div class="form-group" style="margin-top:15px">
+                        <div class="panel-body" style="padding-bottom:0px;">
+                            <div id="toolbar" class="btn-group">
+                                <div class="modal-content">
+                                    <button id="btn_edit" onclick="editUser()" type="button" class="btn btn-primary">
+                                        <i class="glyphicon glyphicon-pencil" aria-hidden="true">
+                                        </i>修改</button>
+                                </div>
+                                <div class="modal-content">
+                                    <button id="btn_delete" type="button" class="btn btn-primary">
+                                        <i class="glyphicon glyphicon-remove" aria-hidden="true">
+                                        </i>删除 </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="table_user"></table>
+                    <!-- 修改的模态框，在修改用户中将获取一行的值放入input中，改变一些参数继续使用 -->
+
+                    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog">
+
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>修改用户</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="editUserForm" action="/updateUser" method="post" class="form-horizontal">
+                                        <div class="form-group" >
+                                            <div class="col-sm-7">
+                                                <input type="hidden" required="required" name="userId" class="form-control" id="editUserId" placeholder="id"/>
+                                            </div>
+                                            <label id="errorUserId" for="editUserId" class="col-sm-3 control-label"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editUserName" class="col-sm-3 control-label">姓名</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" required="required" name="userName" class="form-control" id="editUserName" placeholder="姓名"/>
+                                            </div>
+                                            <label id="errorUserName" for="editUserName" class="col-sm-3 control-label"></label>
+                                        </div>
+                                        <div class="form-group" >
+                                            <label for="editUserSex" class="col-sm-3 control-label">性别</label>
+                                            <div class="col-sm-7">
+                                                <select id="editUserSex" name="userSex"  class="js-select2" >
+                                                    <option  value="1">男</option>
+                                                    <option value="0">女</option>
+                                                </select>
+                                                <div class="dropDownSelect2"></div>
+                                            </div>
+                                            <label id="errorUserSex" for="editUserSex" class="col-sm-3 control-label"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editUserNumber" class="col-sm-3 control-label">工号</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" required="required" name="userNumber" class="form-control" id="editUserNumber" placeholder="工号"/>
+                                            </div>
+                                            <label id="errorUserNumber" for="editUserNumber" class="col-sm-3 control-label"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editUserTel" class="col-sm-3 control-label">联系方式</label>
+                                            <div class="col-sm-7">
+                                                <input type="text" required="required" name="userTel" class="form-control" id="editUserTel" placeholder="联系方式"/>
+                                            </div>
+                                            <label id="errorUserTel" for="editUserTel" class="col-sm-3 control-label"></label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="editConf" class="btn btn-default" onclick="updateUser()">确定</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="common-tip" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>提示</h3>
+                                </div>
+                                <div class="modal-body" align="center">
+                                    <h4 id="tipContent">修改成功</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        </div>
+
+     </div>
+</div>
+</div>
+<div>
+
+<!-- Jquery JS-->
+    <script th:src="@{/asserts/vendor/jquery-3.2.1.min.js}" src="vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script th:src="@{/asserts/vendor/bootstrap-4.1/popper.min.js}"src="vendor/bootstrap-4.1/popper.min.js"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-4.1/bootstrap.min.js}"src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
+        <!--bootstrap table-->
+    <script th:src="@{/asserts/vendor/bootstrap-table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-table/local/bootstrap-table-zh-CN.min.js}"></script>
+    <!-- Vendor JS       -->
+    <script th:src="@{/asserts/vendor/slick/slick.min.js}"src="vendor/slick/slick.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/wow/wow.min.js}"src="vendor/wow/wow.min.js"></script>
+    <script th:src="@{/asserts/vendor/animsition/animsition.min.js}"src="vendor/animsition/animsition.min.js"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js}"src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/counter-up/jquery.waypoints.min.js}"src="vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script th:src="@{/asserts/vendor/counter-up/jquery.counterup.min.js}"src="vendor/counter-up/jquery.counterup.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/circle-progress/circle-progress.min.js}"src="vendor/circle-progress/circle-progress.min.js"></script>
+    <script th:src="@{/asserts/vendor/perfect-scrollbar/perfect-scrollbar.js}"src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script th:src="@{/asserts/vendor/chartjs/Chart.bundle.min.js}"src="vendor/chartjs/Chart.bundle.min.js"></script>
+    <script th:src="@{/asserts/vendor/select2/select2.min.js}"src="vendor/select2/select2.min.js">
+    </script>
+
+    <!-- Main JS-->
+    <script th:src="@{/asserts/js/main.js}" src="js/main.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //1.初始化Table
+            var oTable = new TableInit();
+            oTable.Init();
+
+            //2.初始化Button的点击事件
+            var oButtonInit = new ButtonInit();
+            oButtonInit.Init();
+        });
+
+
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#table_user').bootstrapTable({
+                    url: '/getUserPage',         //请求后台的URL（*）
+                    method: 'get',                      //请求方式（*）
+                    toolbar: '#toolbar',                //工具按钮用哪个容器
+                    striped: true,                      //是否显示行间隔色
+                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true,                   //是否显示分页（*）
+                    sortable: false,                     //是否启用排序
+                    sortOrder: "asc",                   //排序方式
+                    queryParams: oTableInit.queryParams,//传递参数（*）
+                    sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                    pageNumber:1,                       //初始化加载第一页，默认第一页
+                    pageSize: 10,                       //每页的记录行数（*）
+                    pageList: [10, 20, 30, 40],        //可供选择的每页的行数（*）
+                    search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                    strictSearch: true,
+                    showColumns: true,                  //是否显示所有的列
+                    showRefresh: true,                  //是否显示刷新按钮
+                    minimumCountColumns: 2,             //最少允许的列数
+                    clickToSelect: true,                //是否启用点击选中行
+                    height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    uniqueId: "userId",                     //每一行的唯一标识，一般为主键列
+                    showToggle:false,                    //是否显示详细视图和列表视图的切换按钮
+                    cardView: false,                    //是否显示详细视图
+                    detailView: false,                   //是否显示父子表
+                    responseHandler:function(res) {
+                        return {
+                            "total":res.total,//总页数
+                            "rows": res.data //数据
+                        }
+                    },
+                    columns: [{
+                        checkbox: true
+                    }, {
+                        field: 'userName',
+                        title: '姓名',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'userSex',
+                        title: '性别',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter:doSex
+                    }, {
+                        field: 'userNumber',
+                        title: '工号',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'userTel',
+                        title: '联系方式',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        field: 'userType',
+                        title: '用户类型',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter:doType
+                    }/*,{
+                        field: 'userId',
+                        title: '操作',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter:actionFormatter
+                    }*/]
+                });
+                function doSex(value) {
+
+                    var result="";
+                    result +=(value==1)?"男":"女";
+                    return result;
+                }
+                function doType(value) {
+                    var result="";
+                    result +=(value==3)?"<span class=\"role user\">微信用户</span>":"<span class=\"role admin\">管理员</span>";
+                    return result;
+                }
+                //操作栏的格式化
+               /* function actionFormatter(value) {
+                    var result="";
+                    result +="<div class=\"table-data-feature\" style=\"vertical-align:middle\" >"+
+                        " <button title=\"\" class=\"item\" data-original-title=\"Edit\" data-toggle=\"tooltip\" data-placement=\"top\">" +
+                        " <a href=\"/updateUser/"+value+"\"><i class=\"zmdi zmdi-edit\"></i></a>" +
+                        "  </button>" +
+                        "</div>"
+                    return result;
+                }*/
+                return oTableInit;
+            };
+
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    limit: params.limit,   //页面大小
+                    offset: params.offset,  //页码
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+
+
+        var ButtonInit = function () {
+            var oInit = new Object();
+            var postdata = {};
+
+            oInit.Init = function () {
+                //初始化页面上面的按钮事件
+                $("#btn_delete").on(
+                    "click",
+                    function () {
+                        debugger;
+                        var selectData=$("#table_user").bootstrapTable('getSelections');
+                        if (selectData.length<=0){
+                            document.getElementById("tipContent").innerText="请选择需要删除的数据";
+                            $("#common-tip").modal('show');
+                        } else {
+                            var ids=$.map(selectData,function (row) {
+                                return row.userId;
+                            });
+                            deleteUser(ids);
+                        }
+                    }
+                );
+            };
+
+            return oInit;
+        };
+        //点击取消后清空表单中已写信息
+        function resetAddModal() {
+            document.getElementById("editUserForm").reset();
+        }
+
+        //修改
+        function editUser() {
+            //获取选中行的数据
+            debugger;
+            var rows=$("#table_user").bootstrapTable('getSelections');
+            if(rows.length!=1){
+                document.getElementById("tipContent").innerText="请选中一行进行修改";
+                $("#common-tip").modal('show');
+                $("#editUserModal").modal('hide');
+                return false;
+            }else {
+                var row=rows[0];
+                $("#editUserId").val(row.userId);
+                $("#editUserName").val(row.userName);
+                $("#editUserSex").val(row.userSex);
+                $("#editUserNumber").val(row.userNumber);
+                $("#editUserTel").val(row.userTel);
+
+                $("#editUserModal").modal('show');
+            }
+        }
+        function updateUser(){
+            debugger;
+            var param=$("#editUserForm").serializeArray();
+            $("#editConf").attr("onclick","updateUser()");
+            $.ajax({
+                url:"/updateUser",
+                method:"post",
+                data:param,
+                datatype:"json",
+                traditional: true,//这个参数必须要加，反深度序列化的，加之前p=[a,b]加之后p=a&p=b这样后台才能拿到
+                success:function (data) {
+                    if(data.state=="success"){
+                        $("#editUserModal").modal("hide");
+                        document.getElementById("tipContent").innerText="修改成功";
+                        $("#common-tip").modal('show');
+                        $('#table_user').bootstrapTable('refresh');
+                    }
+                },
+                error:function (data) {
+                    document.getElementById("tipContent").innerText="error";
+                    $("#common-tip").modal('show');
+                }
+            });
+        }
+        function findUserByName() {
+            var userName=$("#form_userName").val().trim();
+            console.log(userName)
+            var url="/getUserPage?userName="+userName;
+            $("#table_user").bootstrapTable('refresh',{'url':url});
+        }
+        function resetUserList() {
+            var url="/getUserPage";
+            $("#table_user").bootstrapTable('refresh',{'url':url});
+        }
+      /* $(function () {
+            $('body').on('click','#search_btn',function () {
+                var userName=$('.form').find("input[name='userName']").val().trim();
+                console.log(userName)
+                var url="/getUserPage?userName="+userName;
+                $("#table_user").bootstrapTable('refresh',{'url':url});
+            });
+        });*/
+        function selectOnchang(obj){
+            var type=$("#select_type").val();
+            var url="/getUserPage?userType="+type;
+            $("#table_user").bootstrapTable('refresh',{'url':url});
+
+        }
+        /* $(function () {
+             $('body').on('click','#_del_btn',function () {
+                 var id=$("#_del_inp").val();
+                 console.log(id);
+                 deleteUser(id);
+             });
+         });*/
+        function deleteUser(ids) {
+            debugger;
+            var msg="您真的确定要删除吗？"
+            if(confirm(msg)==true){
+                $.ajax({
+                    url:"/deleteUser",
+                    type: "post" ,
+                    datatype:"json",
+                    traditional: true,//这个参数必须要加，反深度序列化的，加之前p=[a,b]加之后p=a&p=b这样后台才能拿到
+                    data:{
+                        ids:ids
+                    },
+                    success:function (data) {
+                        if(data.type=="success"){
+                            document.getElementById("tipContent").innerText="删除成功";
+                            $("#common-tip").modal('show');
+                            $('#table_user').bootstrapTable('refresh');
+                        }else {
+                            document.getElementById("tipContent").innerText="删除成失败";
+                            $("#common-tip").modal('show');
+                            $('#table_user').bootstrapTable('refresh');
+                        }
+
+                    }
+                });
+            }
+        }
+    </script>
+    </div>
+
+</body>
+
+</html>
+<!-- end document-->

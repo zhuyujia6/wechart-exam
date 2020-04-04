@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+    <!-- Title Page-->
+    <title>Dashboard</title>
+
+    <!-- Fontfaces CSS-->
+    <link th:href="@{/asserts/css/font-face.css}" href="css/font-face.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/font-awesome-4.7/css/font-awesome.min.css}" href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/font-awesome-5/css/fontawesome-all.min.css}" href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/mdi-font/css/material-design-iconic-font.min.css}" href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link th:href="@{/asserts/vendor/bootstrap-4.1/bootstrap.min.css}" href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link th:href="@{/asserts/vendor/animsition/animsition.min.css}" href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css}" href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/wow/animate.css}" href="vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/css-hamburgers/hamburgers.min.css}" href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/slick/slick.css}" href="vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/select2/select2.min.css}" href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/perfect-scrollbar/perfect-scrollbar.css}" href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link th:href="@{/asserts/css/theme.css}" href="css/theme.css" rel="stylesheet" media="all">
+
+
+</head>
+
+<body class="animsition">
+    <div class="page-wrapper">
+        <!-- HEADER MOBILE-->
+        <!--<div th:replace="commons/bar::header"></div>-->
+        <!-- END HEADER MOBILE-->
+
+        <!-- MENU SIDEBAR-->
+        <div th:replace="commons/bar::#sidebar(activeUri='qrcode',active='rights')"></div>
+        <!-- END MENU SIDEBAR-->
+
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            <!-- HEADER DESKTOP-->
+            <div th:replace="commons/bar::desktop"></div>
+            <!-- HEADER DESKTOP-->
+
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+
+                <div class="main-content">
+                    <div class="section__content section__content--p30">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6 offset-md-3 mr-auto ml-auto">
+                                    <section class="card">
+                                        <div class="card-body text-secondary" style="vertical-align:middle;text-align:center">
+                                            <span>
+                                            关注公众号
+                                            <a href="" th:href="@{/getQrCode}">点击获取关注二维码</a>
+                                            </span>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- .col -->
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+
+    </div>
+
+    <!-- Jquery JS-->
+    <script th:src="@{/asserts/vendor/jquery-3.2.1.min.js}" src="vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script th:src="@{/asserts/vendor/bootstrap-4.1/popper.min.js}"src="vendor/bootstrap-4.1/popper.min.js"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-4.1/bootstrap.min.js}"src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!-- Vendor JS       -->
+    <script th:src="@{/asserts/vendor/slick/slick.min.js}"src="vendor/slick/slick.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/wow/wow.min.js}"src="vendor/wow/wow.min.js"></script>
+    <script th:src="@{/asserts/vendor/animsition/animsition.min.js}"src="vendor/animsition/animsition.min.js"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js}"src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/counter-up/jquery.waypoints.min.js}"src="vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script th:src="@{/asserts/vendor/counter-up/jquery.counterup.min.js}"src="vendor/counter-up/jquery.counterup.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/circle-progress/circle-progress.min.js}"src="vendor/circle-progress/circle-progress.min.js"></script>
+    <script th:src="@{/asserts/vendor/perfect-scrollbar/perfect-scrollbar.js}"src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script th:src="@{/asserts/vendor/chartjs/Chart.bundle.min.js}"src="vendor/chartjs/Chart.bundle.min.js"></script>
+    <script th:src="@{/asserts/vendor/select2/select2.min.js}"src="vendor/select2/select2.min.js">
+    </script>
+
+    <!-- Main JS-->
+    <script th:src="@{/asserts/js/main.js}" src="js/main.js"></script>
+
+</body>
+
+</html>
+<!-- end document-->

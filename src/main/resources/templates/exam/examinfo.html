@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+    <!-- Title Page-->
+    <title>考试详情列表</title>
+
+    <!-- Fontfaces CSS-->
+    <link th:href="@{/asserts/css/font-face.css}" href="css/font-face.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/font-awesome-4.7/css/font-awesome.min.css}" href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/font-awesome-5/css/fontawesome-all.min.css}" href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/mdi-font/css/material-design-iconic-font.min.css}" href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link th:href="@{/asserts/vendor/bootstrap-4.1/bootstrap.min.css}" href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link th:href="@{/asserts/vendor/animsition/animsition.min.css}" href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css}" href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/wow/animate.css}" href="vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/css-hamburgers/hamburgers.min.css}" href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/slick/slick.css}" href="vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/select2/select2.min.css}" href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/perfect-scrollbar/perfect-scrollbar.css}" href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+    <link th:href="@{/asserts/vendor/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet" media="all">
+    <!--bootstrap datetimepicker-->
+    <link th:href="@{asserts/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" media="all">
+    <!-- Main CSS-->
+    <link th:href="@{/asserts/css/theme.css}" href="css/theme.css" rel="stylesheet" media="all">
+
+
+</head>
+
+<body class="animsition">
+<div class="page-wrapper">
+    <!-- HEADER MOBILE-->
+    <!--  <div th:replace="commons/bar::header"></div>-->
+    <!-- END HEADER MOBILE-->
+
+    <!-- MENU SIDEBAR-->
+    <div th:replace="commons/bar::#sidebar(activeUri='examPlan',active='exam')"></div>
+    <!-- END MENU SIDEBAR-->
+
+    <!-- PAGE CONTAINER-->
+    <div class="page-container">
+        <!-- HEADER DESKTOP-->
+        <div th:replace="commons/bar::desktop"></div>
+        <!-- HEADER DESKTOP-->
+
+        <!-- MAIN CONTENT-->
+        <div class="main-content">
+            <div class="panel panel-default">
+                <div class="panel-body form-group" style="margin-bottom:0px;">
+                    <div style="float: left"><label style="text-align: right; margin-top:25px">考试状态：</label></div>
+                    <div style="float: left;margin-top: 20px" class="rs-select2--dark rs-select2--md m-r-10 rs-select2--border">
+                        <select onchange="selectOnchang(this)"  id="select_statue" name="planStatue" class="js-select2" >
+                            <option value="" selected="selected" >请选择</option>
+                            <option  value="2">已考</option>
+                            <option value="1">待考</option>
+                        </select>
+                        <div class="dropDownSelect2"></div>
+                    </div>
+                    <div style="float: left">
+                        <label style="text-align: right; margin-top:25px">考试年份：</label>
+                    </div>
+                    <div class="col-sm-2"style="float: left">
+                        <div class="form-group">
+                            <!--<div class='input-group date ' id="datetimepicker" data-target-input="nearest" style="float: left;margin-top: 20px;" >
+                                <input type="text" class="form-control datetimepicker-input" id="date"  data-target="#datetimepicker"/>
+                                <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>-->
+                            <div class="input-append date" id="datetimepicker" style="float: left;margin-top: 20px;">
+                                <input class="form-control datetimepicker-input" id="date" name="year"  type="text" value="2020" readonly>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="float: left;margin-top: 20px" class="col-sm-2 col-sm-offset-4">
+                        <button class="btn btn-primary" onclick="findExamPlanByYear()"  id="search_btn">查询</button> &nbsp;
+                        <button class="btn btn-primary" onclick="reset()"  id="reset_btn">重置</button>
+                    </div>
+                </div>
+            </div>
+            <div id="user_data" class="user-data m-b-30">
+
+                <div class="form-group" style="margin-top:15px">
+                    <div class="panel-body" style="padding-bottom:0px;">
+                        <div id="toolbar" class="btn-group">
+                            <div class="modal-content">
+                                <button id="btn_add" data-toggle="modal" data-target="#addExamPlanModal" type="button"  class="btn btn-primary">
+                                    <i class="glyphicon glyphicon-plus" aria-hidden="true">
+                                    </i>新增 </button>
+                            </div>
+                            <div class="modal-content">
+                                <button id="btn_edit" onclick="editExamPlan()" type="button" class="btn btn-primary">
+                                    <i class="glyphicon glyphicon-pencil" aria-hidden="true">
+                                    </i>修改</button>
+                            </div>
+                            <div class="modal-content">
+                                <button id="btn_delete" type="button" class="btn btn-primary">
+                                    <i class="glyphicon glyphicon-remove" aria-hidden="true">
+                                    </i>删除 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="table_examPlan"></table>
+                <!-- 修改的模态框，在修改用户中将获取一行的值放入input中，改变一些参数继续使用 -->
+
+                <div class="modal fade" id="editExamPlanModal" tabindex="-1" role="dialog">
+
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>修改考试计划</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editExamPlanForm" action="/updateExamPlan" method="post" class="form-horizontal">
+                                    <div class="form-group" >
+                                        <div class="col-sm-7">
+                                            <input type="hidden" required="required" name="planId" class="form-control" id="editPlanId" placeholder="id"/>
+                                        </div>
+                                        <label id="errorId" for="editPlanId" class="col-sm-3 control-label"></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editPlanSchool" class="col-sm-3 control-label">所属学校</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" required="required" name="planSchool" class="form-control" id="editPlanSchool" placeholder="所属学校"/>
+                                        </div>
+                                        <label id="errorSchool" for="editPlanSchool" class="col-sm-3 control-label"></label>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label for="editPlanName" class="col-sm-3 control-label">考试阶段</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" required="required" name="planName" class="form-control" id="editPlanName" placeholder="考试名称"/>
+                                        </div>
+                                        <label id="errorName" for="editPlanName" class="col-sm-3 control-label"></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editPlanType" class="col-sm-3 control-label">考试类型</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" required="required" name="planType" class="form-control" id="editPlanType" placeholder="考试类型"/>
+                                        </div>
+                                        <label id="errorType" for="editPlanType" class="col-sm-3 control-label"></label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="editConf" class="btn btn-default" onclick="updateExamPlan()">确定</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 新增的模态框 -->
+                <div class="modal fade" id="addExamPlanModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>新增考试计划</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addExamPlanForm" action="/addExamPlan" method="post" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="inputPlanSchool" class="col-sm-3 control-label">所属学校</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" required="required" name="planSchool" class="form-control" id="inputPlanSchool" placeholder="所属学校"/>
+                                        </div>
+                                        <label id="errorPlanSchool" for="inputPlanSchool" class="col-sm-3 control-label"></label>
+                                    </div>
+                                    <div class="form-group" >
+                                        <label for="inputPlanName" class="col-sm-3 control-label">考试阶段</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" required="required" name="planName" class="form-control" id="inputPlanName" placeholder="考试名称"/>
+                                        </div>
+                                        <label id="errorPlanName" for="inputPlanName" class="col-sm-3 control-label"></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPlanType" class="col-sm-3 control-label">考试类型</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" required="required" name="planType" class="form-control" id="inputPlanType" placeholder="考试类型"/>
+                                        </div>
+                                        <label id="errorPlanType" for="inputPlanType" class="col-sm-3 control-label"></label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="addConf" class="btn btn-default" onclick="addExamPlan()">确定</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="common-tip" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>提示</h3>
+                            </div>
+                            <div class="modal-body" align="center">
+                                <h4 id="tipContent">修改成功</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-group">
+                     <label class="control-label">性别：</label>
+                     <label class="radio-inline">
+                         <input type="radio" name="sex" value="男" /> 男
+                     </label>        <label class="radio-inline">
+                     <input type="radio" name="sex" value="女" /> 女
+                 </label>
+                 </div>-->
+            </div>
+
+
+            <!-- END DATA TABLE -->
+        </div>
+
+    </div>
+</div>
+<div>
+
+    <!-- Jquery JS-->
+    <script th:src="@{/asserts/vendor/jquery-3.2.1.min.js}" src="vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script th:src="@{/asserts/vendor/bootstrap-4.1/popper.min.js}"src="vendor/bootstrap-4.1/popper.min.js"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-4.1/bootstrap.min.js}"src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!--bootstrap table-->
+    <script th:src="@{/asserts/vendor/bootstrap-table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-table/local/bootstrap-table-zh-CN.min.js}"></script>
+    <!-- Vendor JS       -->
+    <script th:src="@{/asserts/vendor/slick/slick.min.js}"src="vendor/slick/slick.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/wow/wow.min.js}"src="vendor/wow/wow.min.js"></script>
+    <script th:src="@{/asserts/vendor/animsition/animsition.min.js}"src="vendor/animsition/animsition.min.js"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js}"src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/counter-up/jquery.waypoints.min.js}"src="vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script th:src="@{/asserts/vendor/counter-up/jquery.counterup.min.js}"src="vendor/counter-up/jquery.counterup.min.js">
+    </script>
+    <script th:src="@{/asserts/vendor/circle-progress/circle-progress.min.js}"src="vendor/circle-progress/circle-progress.min.js"></script>
+    <script th:src="@{/asserts/vendor/perfect-scrollbar/perfect-scrollbar.js}"src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script th:src="@{/asserts/vendor/chartjs/Chart.bundle.min.js}"src="vendor/chartjs/Chart.bundle.min.js"></script>
+    <script th:src="@{/asserts/vendor/select2/select2.min.js}"src="vendor/select2/select2.min.js">
+    </script>
+    <!--bootstrap datetimepicker-->
+    <script th:src="@{/asserts/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}" ></script>
+    <script th:src="@{/asserts/vendor/bootstrap-datetimepicker/js/locales/moment-with-locales.min.js}"></script>
+    <script th:src="@{/asserts/vendor/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js}" ></script>
+    <!-- Main JS-->
+    <script th:src="@{/asserts/js/main.js}" src="js/main.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //1.初始化Table
+            var oTable = new TableInit();
+            oTable.Init();
+
+            //2.初始化Button的点击事件
+            var oButtonInit = new ButtonInit();
+            oButtonInit.Init();
+        });
+
+
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#table_examPlan').bootstrapTable({
+                    url: '/getExamPlanList?year=',         //请求后台的URL（*）
+                    method: 'get',                      //请求方式（*）
+                    //极为重要，缺失无法执行queryParams，传递page参数
+                    contentType : "application/x-www-form-urlencoded",
+                    toolbar: '#toolbar',                //工具按钮用哪个容器
+                    striped: true,                      //是否显示行间隔色
+                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true,                   //是否显示分页（*）
+                    sortable: false,                     //是否启用排序
+                    sortOrder: "asc",                   //排序方式
+                    queryParams: oTableInit.queryParams,//传递参数（*）
+                    sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                    pageNumber:1,                       //初始化加载第一页，默认第一页
+                    pageSize: 10,                       //每页的记录行数（*）
+                    pageList: [10, 20, 30, 40],        //可供选择的每页的行数（*）
+                    search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                    strictSearch: true,
+                    showColumns: true,                  //是否显示所有的列
+                    showRefresh: true,                  //是否显示刷新按钮
+                    minimumCountColumns: 2,             //最少允许的列数
+                    clickToSelect: true,                //是否启用点击选中行
+                    height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    uniqueId: "planId",                     //每一行的唯一标识，一般为主键列
+                    showToggle:false,                    //是否显示详细视图和列表视图的切换按钮
+                    cardView: false,                    //是否显示详细视图
+                    detailView: false,                   //是否显示父子表
+                    responseHandler:function(res) {
+                        return {
+                            "total":res.total,//总页数
+                            "rows": res.data //数据
+                        }
+                    },
+                    columns: [{
+                        checkbox: true
+                    },{
+                        title: 'itemsId',
+                        field: 'itemsId',
+                        visible: false
+                    },{
+                        title: '序号',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return index+1;
+                        }
+                    }, {
+                        field: 'itemsDept',
+                        title: '学院',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'itemsMajor',
+                        title: '专业',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'itemsSubject',
+                        title: '考试科目',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        field: 'itemsPlace',
+                        title: '考试地点',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter:doStatue
+                    },{
+                        field: 'itemsNumber',
+                        title: '考试人数',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        field: 'itemsExamDate',
+                        title: '考试日期',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        field: 'itemsExamTime',
+                        title: '考试时间',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        field: 'itemsType',
+                        title: '考试类型',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        field: 'itemsStatue',
+                        title: '考试状态',
+                        align: 'center',
+                        valign: 'middle'
+                    },{
+                        title: 'userId',
+                        field: 'userId',
+                        visible: false
+                    },{
+                        title: 'planId',
+                        field: 'planId',
+                        visible: false
+                    }]
+                });
+                /*//操作栏的格式化
+                function actionFormatter(value) {
+                    var result="";
+                    result +="<div class=\"table-data-feature\" style=\"vertical-align:middle\" >"+
+                        " <button title=\"\" class=\"item\" data-original-title=\"Edit\" data-toggle=\"tooltip\" data-placement=\"top\">" +
+                        " <a href=\"/updateUser/"+value+"\"><i class=\"zmdi zmdi-edit\"></i></a>" +
+                        "  </button>" +
+                        "</div>"
+                    return result;
+                }*/
+                function doStatue(value) {
+                    var result="";
+                    result +=(value==1)?"<span class=\"role user\">待考</span>":"<span class=\"role admin\">已考</span>";
+                    return result;
+                }
+                return oTableInit;
+            };
+
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    limit: params.limit,   //页面大小
+                    offset: params.offset,  //页码
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+
+
+        var ButtonInit = function () {
+            var oInit = new Object();
+            var postdata = {};
+
+            oInit.Init = function () {
+                //初始化页面上面的按钮事件
+                $("#btn_delete").on(
+                    "click",
+                    function () {
+                        var selectData=$("#table_examPlan").bootstrapTable('getSelections');
+                        if (selectData.length<=0){
+                            document.getElementById("tipContent").innerText="请选择需要删除的数据";
+                            $("#common-tip").modal('show');
+                        } else {
+                            var ids=$.map(selectData,function (row) {
+                                return row.planId;
+                            });
+                            deletePlan(ids);
+                        }
+                    }
+                );
+
+            };
+
+            return oInit;
+        };
+        //点击取消后清空表单中已写信息
+        function resetAddModal() {
+            document.getElementById("addExamPlanForm").reset();
+        }
+        //新增考试计划
+        function addExamPlan() {
+            var param=$("#addExamPlanForm").serializeArray();
+            var inputPlanSchool=$("#inputPlanSchool").val();
+            var inputPlanName=$("#inputPlanName").val();
+            var inputPlanType=$("#inputPlanType").val();
+            if (inputPlanSchool=="" ||inputPlanName==""||inputPlanType==""){
+
+                document.getElementById("tipContent").innerText="请输入完整信息";
+                $("#common-tip").modal('show');
+                return false;
+            }
+
+            $("#addConf").attr("onclick","addExamPlan()");
+            $.ajax({
+                url:"/addExamPlan",
+                method:"post",
+                data:param,
+                datatype:"json",
+                traditional: true,//这个参数必须要加，反深度序列化的，加之前p=[a,b]加之后p=a&p=b这样后台才能拿到
+                success:function (data) {
+                    if (data.state=="success"){
+                        document.getElementById("tipContent").innerText="新增成功";
+                        $("#common-tip").modal('show');
+                        $("#addExamPlanModal").modal('hide');
+                        $('#table_examPlan').bootstrapTable('refresh');
+                        resetAddModal();
+                    }
+                },
+                error:function () {
+                    document.getElementById("tipContent").innerText="新增失败";
+                    $("#common-tip").modal('show');
+                }
+            });
+        }
+
+        //修改
+        function editExamPlan() {
+            //获取选中行的数据
+
+            var rows=$("#table_examPlan").bootstrapTable('getSelections');
+            if(rows.length!=1){
+                document.getElementById("tipContent").innerText="请选中一行进行修改";
+                $("#common-tip").modal('show');
+                $("#editExamPlanModal").modal('hide');
+                return false;
+            }else {
+                var row=rows[0];
+                $("#editPlanId").val(row.planId)
+                $("#editPlanSchool").val(row.planSchool);
+                $("#editPlanName").val(row.planName);
+                $("#editPlanType").val(row.planType);
+                $("#editExamPlanModal").modal('show');
+            }
+        }
+        function updateExamPlan(){
+            debugger;
+            var param=$("#editExamPlanForm").serializeArray();
+            $("#editConf").attr("onclick","updateExamPlan()");
+            $.ajax({
+                url:"/updateExamPlan",
+                method:"post",
+                data:param,
+                datatype:"json",
+                traditional: true,//这个参数必须要加，反深度序列化的，加之前p=[a,b]加之后p=a&p=b这样后台才能拿到
+                success:function (data) {
+                    if(data.state=="success"){
+                        $("#editExamPlanModal").modal("hide");
+                        document.getElementById("tipContent").innerText="修改成功";
+                        $("#common-tip").modal('show');
+                        $('#table_examPlan').bootstrapTable('refresh');
+                    }
+                },
+                error:function (data) {
+                    document.getElementById("tipContent").innerText="error";
+                    $("#common-tip").modal('show');
+                }
+            });
+        }
+        function findExamPlanByYear() {
+            debugger;
+            var year=$("#date").val().trim();
+            console.log(year);
+            var url="/getExamPlanList?year="+year;
+            $("#table_examPlan").bootstrapTable('refresh',{'url':url});
+        }
+        function reset() {
+            var url="/getExamPlanList?year=";
+            $("#table_examPlan").bootstrapTable('refresh',{'url':url});
+        }
+        function selectOnchang(obj){
+            var statue=$("#select_statue").val();
+            var url="/getExamPlanList?year=&planStatue="+statue;
+            $("#table_examPlan").bootstrapTable('refresh',{'url':url});
+
+        }
+        //删除
+        function deletePlan(ids) {
+            var msg="您真的确定要删除吗？"
+            if(confirm(msg)==true){
+                $.ajax({
+                    url:"/deleteExamPlan",
+                    type: "post" ,
+                    traditional: true,//这个参数必须要加，反深度序列化的，加之前p=[a,b]加之后p=a&p=b这样后台才能拿到
+                    data:{
+                        ids:ids
+                    },
+                    success:function (data) {
+                        if(data.type=="success"){
+                            document.getElementById("tipContent").innerText="删除成功";
+                            $("#common-tip").modal('show');
+                            $('#table_examPlan').bootstrapTable('refresh');
+                        }else {
+                            document.getElementById("tipContent").innerText="删除成失败";
+                            $("#common-tip").modal('show');
+                        }
+
+                    }
+                });
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            //选择年的
+            $('#datetimepicker').datetimepicker({
+                format: 'yyyy',
+                minView: 4,
+                startView:4,
+                initialDate:new Date(),
+                autoclose: true,
+                todayBtn:true,
+                locale:'zh-CN'
+            });
+            //默认获取当前日期
+            var today = new Date();
+            var nowdate = today.getFullYear();
+            //对日期格式进行处理
+            document.getElementById("date").value = nowdate;
+        });
+    </script>
+</div>
+
+</body>
+
+</html>
+<!-- end document-->

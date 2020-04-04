@@ -1,0 +1,122 @@
+package com.zyj.wechartexam.weixin.utils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import com.zyj.wechartexam.weixin.message.responseMessage.ResponseArticle;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
+
+
+/**
+ * 数据字典类
+ * @author Zhu YuJia
+ */
+public class CreateXmlUtil {
+	/**
+	 * 文本信息回复
+	 * @param toName
+	 * @param FromName
+	 * @param content
+	 * @return
+	 */
+	public String getBackXMLTypeText(String toName, String FromName,
+			String content) {
+		String returnStr = "";
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+		String times = format.format(new Date());
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(FromName));
+		rootXML.addContent(new Element("FromUserName").setText(toName));
+		rootXML.addContent(new Element("CreateTime").setText(times));
+		rootXML.addContent(new Element("MsgType").setText("text"));
+		rootXML.addContent(new Element("Content").setText(content));
+		Document doc = new Document(rootXML);
+		XMLOutputter XMLOut = new XMLOutputter();
+		returnStr = XMLOut.outputString(doc);
+		return returnStr;
+	}
+
+	/**
+	 * 图文信息回复
+	 * @param toName
+	 * @param FromName
+	 *
+	 * @return
+	 */
+	public static String getBackXMLTypeImg(String toName, String FromName,
+			List<ResponseArticle> list) {
+		String returnStr = "";
+		int k=10;
+		while(list.size()>10){
+			list.remove(k);
+			k++;
+		}
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+		String times = format.format(new Date());
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(FromName));
+		rootXML.addContent(new Element("FromUserName").setText(toName));
+		rootXML.addContent(new Element("CreateTime").setText(times));
+		rootXML.addContent(new Element("MsgType").setText("news"));
+		rootXML.addContent(new Element("ArticleCount").setText(list.size()+""));	//图文信息有几条
+		Element fXML = new Element("Articles");
+		Element mXML = null;
+		for (int i = 0; i < list.size(); i++) {
+			mXML = new Element("item");
+			mXML.addContent(new Element("Title").setText(list.get(i).getTitle()));
+			mXML.addContent(new Element("Description").setText(list.get(i).getDescription()));
+			mXML.addContent(new Element("PicUrl").setText(list.get(i).getPicUrl()));
+			mXML.addContent(new Element("Url").setText(list.get(i).getUrl()));
+			fXML.addContent(mXML);
+		}
+		rootXML.addContent(fXML);
+		Document doc = new Document(rootXML);
+		XMLOutputter XMLOut = new XMLOutputter();
+		returnStr = XMLOut.outputString(doc);
+		return returnStr;
+	}
+
+	/**
+	 * 音乐信息回复
+	 * @param toName
+	 * @param FromName
+	 * @param content
+	 * @return
+	 */
+	public String getBackXMLTypeMusic(String toName, String FromName,
+			String content) {
+		String returnStr = "";
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+		String times = format.format(new Date());
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(FromName));
+		rootXML.addContent(new Element("FromUserName").setText(toName));
+		rootXML.addContent(new Element("CreateTime").setText(times));
+		rootXML.addContent(new Element("MsgType").setText("music"));
+		Element mXML = new Element("Music");
+		mXML.addContent(new Element("Title").setText("音乐"));
+		mXML.addContent(new Element("Description").setText("音乐让人心情舒畅！"));
+		mXML.addContent(new Element("MusicUrl").setText(content));
+		mXML.addContent(new Element("HQMusicUrl").setText(content));
+		mXML.addContent(new Element("ThumbMediaId").setText(content));
+		rootXML.addContent(mXML);
+		Document doc = new Document(rootXML);
+		XMLOutputter XMLOut = new XMLOutputter();
+		returnStr = XMLOut.outputString(doc);
+		return returnStr;
+	}
+	
+	public String getBackXMLTypeRes(String toName,String miwen){
+		String returnStr = "";
+		Element rootXML = new Element("xml");
+		rootXML.addContent(new Element("ToUserName").setText(toName));
+		rootXML.addContent(new Element("Encrypt").setText(miwen));
+		Document doc = new Document(rootXML);
+		XMLOutputter XMLOut = new XMLOutputter();
+		returnStr = XMLOut.outputString(doc);
+		return returnStr;
+	}
+}
